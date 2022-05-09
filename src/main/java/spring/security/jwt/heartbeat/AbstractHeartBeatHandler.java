@@ -1,6 +1,5 @@
 package spring.security.jwt.heartbeat;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import spring.security.jwt.dto.HeartBeatRecordDTO;
@@ -34,10 +33,7 @@ public abstract class AbstractHeartBeatHandler {
     public void init(HeartBeatConfig config, HeartBeatLogger logger) {
         this.heartBeatLogger = logger;
         // 初始化定时任务线程池
-        ThreadFactory threadFactory = new ThreadFactoryBuilder()
-                .setNameFormat("AbstractHeartBeatHandler-%s")
-                .build();
-        scheduledExecutorService = Executors.newScheduledThreadPool(threadNum, threadFactory);
+        scheduledExecutorService = Executors.newScheduledThreadPool(threadNum, Executors.defaultThreadFactory());
         scheduledExecutorService.scheduleWithFixedDelay(new HeartBeatTask(this.getHeartBeatRecord()),
                 config.getDelayHandlerTime(), config.getIntervalTime(),
                 TimeUnit.MILLISECONDS);
